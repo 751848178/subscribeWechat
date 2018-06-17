@@ -1,8 +1,8 @@
 const redis = require("redis");
-const client = redis.createClient({
+const client = redis.createClient(/*{
     host: "119.29.204.172",
     port: 6379
-});
+}*/);
 
 client.auth("admin", function(err, res){
     console.log(err, res);
@@ -39,6 +39,27 @@ const hmset = function(hash, obj, expire){
 
             resolve(result);
         })
+    })
+};
+
+/**
+ * 查询对象数据
+ * @param key 键
+ */
+const hmget = function(key){
+
+    return new Promise(function(resolve, reject){
+
+        client.hmget(key, "name", function(err,result){
+
+            if (err) {
+                console.log(err);
+                reject(err);
+                return;
+            }
+
+            resolve(result);
+        });
     })
 };
 
@@ -93,7 +114,8 @@ const get = function(key){
 redisUtil = {
     get,
     set,
-    hmset
+    hmset,
+    hmget
 };
 
 module.exports = redisUtil;

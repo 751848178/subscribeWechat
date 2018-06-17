@@ -59,10 +59,11 @@ router.get("/wx", async (ctx, next) => {
 router.get("/wx/subscribe", async (ctx, next) => {
 	await next();
 	let query = ctx.request.query;
-	wechatApi.getQrcode(query);
+	// wechatApi.getQrcode(query);
 	// {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
-	redis.hmset("userInfo", query, 7180);
-	ctx.body = res;
+	await redis.hmset("userInfo", object.assign({}, {name: "xingbo", age: 21}, query), 7180);
+	let res = await redis.hmget("userInfo");
+    ctx.body = res;
 });
 
 app.use(router.routes());
