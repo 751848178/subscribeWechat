@@ -45,33 +45,6 @@ app.use(async (ctx, next) => {
 	await next();
 });
 
-router.get("/wx", async (ctx, next) => {
-	await next();
-	let res = utils.sign(ctx.request.query, config);
-	/* ctx.body = {
-	 code: 200,
-	 data: "",
-	 msg: ""
-	 }; */
-	await redis.hmset("wechatEvent", ctx.request.query, 7180);
-	console.log(res);
-	ctx.body = res;
-});
-
-router.get("/wx/subscribe", async (ctx, next) => {
-	await next();
-	let query = ctx.request.query;
-	// wechatApi.getQrcode(query);
-	// {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
-	await redis.hmset("userInfo", Object.assign({}, {name: "xingbo", age: 21}, query), 7180);
-	// let res = await redis.hmget("userInfo");
-	let res = utils.sign({
-		FromUserName: query.FromUserName,
-		CreateTime: query.CreateTime
-	}, config);
-    ctx.body = res;
-});
-
 app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 	console.log(JSON.stringify(msg));
 	await redis.hmset("msgInfo", msg, 7180);
@@ -114,6 +87,33 @@ app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 		];
 	}
 }));
+
+router.get("/wx", async (ctx, next) => {
+	await next();
+	let res = utils.sign(ctx.request.query, config);
+	/* ctx.body = {
+	 code: 200,
+	 data: "",
+	 msg: ""
+	 }; */
+	await redis.hmset("wechatEvent", ctx.request.query, 7180);
+	console.log(res);
+	ctx.body = res;
+});
+
+router.get("/wx/subscribe", async (ctx, next) => {
+	await next();
+	let query = ctx.request.query;
+	// wechatApi.getQrcode(query);
+	// {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
+	await redis.hmset("userInfo", Object.assign({}, {name: "xingbo", age: 21}, query), 7180);
+	// let res = await redis.hmget("userInfo");
+	let res = utils.sign({
+		FromUserName: query.FromUserName,
+		CreateTime: query.CreateTime
+	}, config);
+    ctx.body = res;
+});
 
 app.use(router.routes());
 

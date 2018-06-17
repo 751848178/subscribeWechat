@@ -5,14 +5,14 @@ const client = redis.createClient(/*{
 }*/);
 
 client.auth("admin", function(err, res){
-    console.log(err, res);
+    // console.log(err, res);
 });
 
 client.on("error", function (err) {
     console.log("Error :" , err);
 });
 client.on('connect', function(){
-    console.log('Redis连接成功.');
+    // console.log('Redis连接成功.');
 });
 
 /**
