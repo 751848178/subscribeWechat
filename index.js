@@ -5,7 +5,7 @@ const config = require("./config/config");
 const utils = require("./utils/utils");
 const redis = require("./utils/redis");
 const wechatApi = require("./utils/wechat");
-const wechat = require("wechat");
+const wechat = require("co-wechat");
 
 let app = new Koa();
 
