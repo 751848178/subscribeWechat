@@ -46,7 +46,7 @@ app.use(async (ctx, next) => {
 });
 
 app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
-	console.log(JSON.stringify(msg));
+	console.log(msg);
 	await redis.hmset("msgInfo", msg, 7180);
 	// 微信输入信息就是这个 message
 	if (message.FromUserName === 'diaosi') {
