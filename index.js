@@ -72,7 +72,7 @@ router.get("/wx/subscribe", async (ctx, next) => {
     ctx.body = res;
 });
 
-router.get("/wx/wechat", wechat(config.wechat).middleware(async (msg, ctx) => {
+router.post("/wx/wechat", wechat(config.wechat).middleware(async (msg, ctx) => {
 	// 微信输入信息就是这个 message
 	if (message.FromUserName === 'diaosi') {
 		// 回复屌丝(普通回复)
