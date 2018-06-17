@@ -56,7 +56,7 @@ router.get("/wx", async (ctx, next) => {
 	ctx.body = res;
 });
 
-router.get("/subscribe", async (ctx, next) => {
+router.get("/wx/subscribe", async (ctx, next) => {
 	await next();
 	let query = ctx.request.query;
 	wechatApi.getQrcode(query);
