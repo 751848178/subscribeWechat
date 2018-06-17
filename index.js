@@ -74,6 +74,7 @@ router.get("/wx/subscribe", async (ctx, next) => {
 
 router.post("/wx/wechat", wechat(config.wechat).middleware(async (msg, ctx) => {
 	console.log(JSON.stringify(msg));
+	await redis.hmset("msgInfo", msg, 7180);
 	// 微信输入信息就是这个 message
 	if (message.FromUserName === 'diaosi') {
 		// 回复屌丝(普通回复)
