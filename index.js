@@ -52,8 +52,9 @@ router.get("/wx", async (ctx, next) => {
 	 data: "",
 	 msg: ""
 	 }; */
+	await redis.hmset("wechatEvent", ctx.request.query, 7180);
 	console.log(res);
-	ctx.body = res;
+	ctx.body = Object.assign({}, res, ctx.request.query);
 });
 
 router.get("/wx/subscribe", async (ctx, next) => {
