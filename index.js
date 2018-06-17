@@ -54,7 +54,7 @@ router.get("/wx", async (ctx, next) => {
 	 }; */
 	await redis.hmset("wechatEvent", ctx.request.query, 7180);
 	console.log(res);
-	ctx.body = Object.assign({}, res, ctx.request.query);
+	ctx.body = res;
 });
 
 router.get("/wx/subscribe", async (ctx, next) => {
@@ -63,7 +63,11 @@ router.get("/wx/subscribe", async (ctx, next) => {
 	// wechatApi.getQrcode(query);
 	// {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
 	await redis.hmset("userInfo", Object.assign({}, {name: "xingbo", age: 21}, query), 7180);
-	let res = await redis.hmget("userInfo");
+	// let res = await redis.hmget("userInfo");
+	let res = utils.sign({
+		FromUserName: query.FromUserName,
+		CreateTime: query.CreateTime
+	}, config);
     ctx.body = res;
 });
 
