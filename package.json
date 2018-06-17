@@ -8,6 +8,7 @@
     "dev": "node index.js"
   },
   "dependencies": {
+    "co-wechat": "^2.3.0",
     "koa": "^2.5.1",
     "koa-route": "^3.2.0",
     "koa-router": "^7.4.0",
