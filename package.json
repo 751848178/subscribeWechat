@@ -1,0 +1,19 @@
+{
+  "name": "subscribeWechat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "xingbo",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "koa": "^2.5.1",
+    "koa-route": "^3.2.0",
+    "koa-router": "^7.4.0",
+    "redis": "^2.8.0",
+    "request": "^2.87.0",
+    "sha1": "^1.1.1",
+    "xml2js": "^0.4.19"
+  }
+}
