@@ -54,7 +54,7 @@ router.get("/wx", async (ctx, next) => {
 	 data: "",
 	 msg: ""
 	 }; */
-	await redis.hmset("wechatEvent", ctx.request.query, 7180);
+	await redis.set("wechatEvent", ctx.request.query, 7180);
 	console.log(res);
 	ctx.body = res;
 });
@@ -67,7 +67,7 @@ router.post("/wx", async (ctx, next) => {
      data: "",
      msg: ""
      }; */
-    await redis.hmset("wechatEvent_wx", ctx.request.query, 7180);
+    await redis.set("wechatEvent_wx", ctx.request.query, 7180);
     console.log(res);
     ctx.body = res;
 });
@@ -80,7 +80,7 @@ router.post("/", async (ctx, next) => {
      data: "",
      msg: ""
      }; */
-    await redis.hmset("wechatEvent", ctx.request.query, 7180);
+    await redis.set("wechatEvent", ctx.request.query, 7180);
     console.log(res);
     ctx.body = res;
 });
