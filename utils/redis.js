@@ -17,54 +17,6 @@ client.on('connect', function(){
 
 /**
  * 添加string类型的数据
- * @param hash 键
- * @params obj 值
- * @params expire (过期时间,单位秒;可为空，为空表示不过期)
- */
-const hmset = function(hash, obj, expire){
-
-    return new Promise(function(resolve, reject){
-
-        client.HMSET(hash, JSON.stringify(obj), function(err, result){
-
-            if (err) {
-                console.log(err);
-                reject(err);
-                return;
-            }
-
-            if (!isNaN(expire) && expire > 0) {
-                client.expire(hash, parseInt(expire));
-            }
-
-            resolve(result);
-        })
-    })
-};
-
-/**
- * 查询对象数据
- * @param key 键
- */
-const hmget = function(key){
-
-    return new Promise(function(resolve, reject){
-
-        client.hmget(key, "name", function(err,result){
-
-            if (err) {
-                console.log(err);
-                reject(err);
-                return;
-            }
-
-            resolve(result);
-        });
-    })
-};
-
-/**
- * 添加string类型的数据
  * @param key 键
  * @params value 值
  * @params expire (过期时间,单位秒;可为空，为空表示不过期)
@@ -114,8 +66,6 @@ const get = function(key){
 redisUtil = {
     get,
     set,
-    hmset,
-    hmget
 };
 
 module.exports = redisUtil;

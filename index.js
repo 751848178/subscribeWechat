@@ -42,21 +42,21 @@ app.use(async (ctx, next) => {
 		}
 
 	});
-    redis.hmset("wx", ctx, 7128);
+    redis.set("wx", JSON.stringify(ctx.request.query), 7128);
 	await next();
 });
 
 router.get("/wx", async (ctx, next) => {
-	await next();
 	let res = utils.sign(ctx.request.query, config);
 	/* ctx.body = {
 	 code: 200,
 	 data: "",
 	 msg: ""
 	 }; */
-	await redis.set("wechatEvent", ctx.request.query, 7180);
-	console.log(res);
+    console.log("1:" + JSON.stringify(ctx.request.query));
+	await redis.set("wechatEvent", JSON.stringify(ctx.request.query), 7180);
 	ctx.body = res;
+    await next();
 });
 
 router.post("/wx", async (ctx, next) => {
@@ -67,7 +67,7 @@ router.post("/wx", async (ctx, next) => {
      data: "",
      msg: ""
      }; */
-    await redis.set("wechatEvent_wx", ctx.request.query, 7180);
+    // await redis.set("wechatEvent_wx", ctx.request.query, 7180);
     console.log(res);
     ctx.body = res;
 });
@@ -80,7 +80,7 @@ router.post("/", async (ctx, next) => {
      data: "",
      msg: ""
      }; */
-    await redis.set("wechatEvent", ctx.request.query, 7180);
+    // await redis.set("wechatEvent", ctx.request.query, 7180);
     console.log(res);
     ctx.body = res;
 });
@@ -90,7 +90,7 @@ router.get("/wx/subscribe", async (ctx, next) => {
 	let query = ctx.request.query;
 	// wechatApi.getQrcode(query);
 	// {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
-	await redis.hmset("userInfo", Object.assign({}, {name: "xingbo", age: 21}, query), 7180);
+	// await redis.hmset("userInfo", Object.assign({}, {name: "xingbo", age: 21}, query), 7180);
 	// let res = await redis.hmget("userInfo");
 	let res = utils.sign({
 		FromUserName: query.FromUserName,
@@ -99,9 +99,9 @@ router.get("/wx/subscribe", async (ctx, next) => {
     ctx.body = res;
 });
 
-app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
+/*app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 	console.log(msg);
-	await redis.hmset("msgInfo", msg, 7180);
+	// await redis.hmset("msgInfo", msg, 7180);
 	// 微信输入信息就是这个 message
 	if (message.FromUserName === 'diaosi') {
 		// 回复屌丝(普通回复)
@@ -140,7 +140,7 @@ app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 			}
 		];
 	}
-}));
+}));*/
 
 app.use(router.routes());
 
