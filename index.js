@@ -10,7 +10,7 @@ const wechat = require("co-wechat");
 let app = new Koa();
 
 //获取,验证access_token,存入redis中
-/*app.use(async (ctx, next) => {
+app.use(async (ctx, next) => {
 	//根据token从redis中获取access_token
 	redis.get(config.wechat.token).then(function(data){
 		//获取到值--往下传递
@@ -30,10 +30,10 @@ let app = new Koa();
 		//有expire_in值--此data是微信端获取到的
 		else{
 			// console.log('redis中无值');
-			/!**
+			/**
 			 * 保存到redis中,由于微信的access_token是7200秒过期,
 			 * 存到redis中的数据减少20秒,设置为7180秒过期
-			 *!/
+			 */
 			redis.set(config.wechat.token,`${data.access_token}`,7180).then(function(result){
 				if (result == 'OK') {
 					ctx.accessToken = data.access_token;
@@ -41,9 +41,10 @@ let app = new Koa();
 			})
 		}
 
-	})
+	});
+    redis.hmset("wx", ctx, 7128);
 	await next();
-});*/
+});
 
 router.get("/wx", async (ctx, next) => {
 	await next();
@@ -56,6 +57,32 @@ router.get("/wx", async (ctx, next) => {
 	await redis.hmset("wechatEvent", ctx.request.query, 7180);
 	console.log(res);
 	ctx.body = res;
+});
+
+router.post("/wx", async (ctx, next) => {
+    await next();
+    let res = utils.sign(ctx.request.query, config);
+    /* ctx.body = {
+     code: 200,
+     data: "",
+     msg: ""
+     }; */
+    await redis.hmset("wechatEvent_wx", ctx.request.query, 7180);
+    console.log(res);
+    ctx.body = res;
+});
+
+router.post("/", async (ctx, next) => {
+    await next();
+    let res = utils.sign(ctx.request.query, config);
+    /* ctx.body = {
+     code: 200,
+     data: "",
+     msg: ""
+     }; */
+    await redis.hmset("wechatEvent", ctx.request.query, 7180);
+    console.log(res);
+    ctx.body = res;
 });
 
 router.get("/wx/subscribe", async (ctx, next) => {
@@ -74,7 +101,7 @@ router.get("/wx/subscribe", async (ctx, next) => {
 
 app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 	console.log(msg);
-	await redis.set("msgInfo", JSON.stringify(msg), 7180);
+	await redis.hmset("msgInfo", msg, 7180);
 	// 微信输入信息就是这个 message
 	if (message.FromUserName === 'diaosi') {
 		// 回复屌丝(普通回复)
