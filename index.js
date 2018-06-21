@@ -67,7 +67,7 @@ router.post("/wx", async (ctx, next) => {
      data: "",
      msg: ""
      }; */
-    await redis.set("wechatEvent_wx", JSON.stringify(ctx.request.query), 7180);
+    await redis.set("wechatEvent_wx", JSON.stringify(ctx), 7180);
     console.log(res);
     ctx.body = res;
 });
@@ -99,7 +99,7 @@ router.get("/wx/subscribe", async (ctx, next) => {
     ctx.body = res;
 });
 
-app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
+/*app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 	console.log(msg);
     await redis.set("msg", JSON.stringify(msg), 7180);
 	// await redis.hmset("msgInfo", msg, 7180);
@@ -141,7 +141,7 @@ app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 			}
 		];
 	}
-}));
+}));*/
 
 app.use(router.routes());
 
