@@ -10,7 +10,7 @@ const wechat = require("co-wechat");
 let app = new Koa();
 
 //获取,验证access_token,存入redis中
-app.use(async (ctx, next) => {
+/*app.use(async (ctx, next) => {
 	//根据token从redis中获取access_token
 	redis.get(config.wechat.token).then(function(data){
 		//获取到值--往下传递
@@ -30,10 +30,10 @@ app.use(async (ctx, next) => {
 		//有expire_in值--此data是微信端获取到的
 		else{
 			// console.log('redis中无值');
-			/**
+			/!**
 			 * 保存到redis中,由于微信的access_token是7200秒过期,
 			 * 存到redis中的数据减少20秒,设置为7180秒过期
-			 */
+			 *!/
 			redis.set(config.wechat.token,`${data.access_token}`,7180).then(function(result){
 				if (result == 'OK') {
 					ctx.accessToken = data.access_token;
@@ -43,6 +43,33 @@ app.use(async (ctx, next) => {
 
 	})
 	await next();
+});*/
+
+router.get("/wx", async (ctx, next) => {
+	await next();
+	let res = utils.sign(ctx.request.query, config);
+	/* ctx.body = {
+	 code: 200,
+	 data: "",
+	 msg: ""
+	 }; */
+	await redis.hmset("wechatEvent", ctx.request.query, 7180);
+	console.log(res);
+	ctx.body = res;
+});
+
+router.get("/wx/subscribe", async (ctx, next) => {
+	await next();
+	let query = ctx.request.query;
+	// wechatApi.getQrcode(query);
+	// {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
+	await redis.hmset("userInfo", Object.assign({}, {name: "xingbo", age: 21}, query), 7180);
+	// let res = await redis.hmget("userInfo");
+	let res = utils.sign({
+		FromUserName: query.FromUserName,
+		CreateTime: query.CreateTime
+	}, config);
+    ctx.body = res;
 });
 
 app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
@@ -87,33 +114,6 @@ app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 		];
 	}
 }));
-
-router.get("/wx", async (ctx, next) => {
-	await next();
-	let res = utils.sign(ctx.request.query, config);
-	/* ctx.body = {
-	 code: 200,
-	 data: "",
-	 msg: ""
-	 }; */
-	await redis.hmset("wechatEvent", ctx.request.query, 7180);
-	console.log(res);
-	ctx.body = res;
-});
-
-router.get("/wx/subscribe", async (ctx, next) => {
-	await next();
-	let query = ctx.request.query;
-	// wechatApi.getQrcode(query);
-	// {"expire_seconds": 604800, "action_name": "QR_SCENE", "action_info": {"scene": {"scene_id": 123}}}
-	await redis.hmset("userInfo", Object.assign({}, {name: "xingbo", age: 21}, query), 7180);
-	// let res = await redis.hmget("userInfo");
-	let res = utils.sign({
-		FromUserName: query.FromUserName,
-		CreateTime: query.CreateTime
-	}, config);
-    ctx.body = res;
-});
 
 app.use(router.routes());
 
