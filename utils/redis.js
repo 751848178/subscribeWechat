@@ -25,7 +25,7 @@ const hmset = function(hash, obj, expire){
 
     return new Promise(function(resolve, reject){
 
-        client.HMSET(hash, obj, function(err, result){
+        client.HMSET(hash, JSON.stringify(obj), function(err, result){
 
             if (err) {
                 console.log(err);
