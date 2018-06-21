@@ -99,7 +99,7 @@ router.get("/wx/subscribe", async (ctx, next) => {
     ctx.body = res;
 });
 
-/*app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
+app.use(wechat(config.wechat).middleware(async (msg, ctx) => {
 	console.log(msg);
 	// await redis.hmset("msgInfo", msg, 7180);
 	// 微信输入信息就是这个 message
@@ -140,7 +140,7 @@ router.get("/wx/subscribe", async (ctx, next) => {
 			}
 		];
 	}
-}));*/
+}));
 
 app.use(router.routes());
 
