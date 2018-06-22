@@ -23,6 +23,7 @@ app.use(async (ctx, next) => {
 		}
 	}).then(function(data){
 		//没有expire_in值--此data是redis中获取到的
+		console.log(data);
 		if (!data.expires_in) {
 			// console.log('redis获取到值' + JSON.stringify(data));
 			ctx.accessToken = data;
@@ -53,8 +54,8 @@ router.get("/wx", async (ctx, next) => {
 	 data: "",
 	 msg: ""
 	 }; */
-    console.log("1:" + JSON.stringify(ctx.request.query));
-	await redis.set("wechatEvent", JSON.stringify(ctx.request.query), 7180);
+    console.log("1:" + ctx.req);
+	await redis.set("wechatEvent", JSON.stringify(ctx.req), 7180);
 	ctx.body = res;
     await next();
 });
