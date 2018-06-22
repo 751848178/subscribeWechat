@@ -53,8 +53,8 @@ router.get("/wx", async (ctx, next) => {
 	 data: "",
 	 msg: ""
 	 }; */
-    console.log("1:" + ctx.req);
-	await redis.set("wechatEvent", JSON.stringify(ctx.req), 7180);
+    console.log("1:" + ctx);
+	await redis.set("wechatEvent", JSON.stringify(ctx), 7180);
 	ctx.body = res;
     await next();
 });
