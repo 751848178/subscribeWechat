@@ -1,9 +1,9 @@
 const redis = require("redis");
-const client = redis.createClient(/*{
-    host: "119.29.204.172",
-    port: 6379
-}*/);
-
+const client = redis.createClient();
+/*{
+ host: "119.29.204.172",
+ port: 6379
+ }*/
 client.auth("admin", function(err, res){
     // console.log(err, res);
 });
