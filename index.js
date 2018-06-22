@@ -83,17 +83,19 @@ router.post("/wx", async (ctx, next) => {
 	});
 
 	let jsonRes = "";
-	await promise.then(async (result) => {
+	await promise.then((result) => {
 		jsonRes = result;
-		await redis.set("wechatEvent_params", JSON.stringify(result), 7180);
 		ctx.req.body = result;
 	}).catch((e) => {
 		e.status = 400;
 	});
 
+	if(jsonRes.MsgType === "event" && jsonRes.Event === "subscribe") {
+		await redis.set("wechatEvent_params", JSON.stringify(jsonRes.xml), 7180);
+	}
+
     await redis.set("wechatEvent_wx", JSON.stringify(ctx.request.body), 7180);
-    console.log(res);
-    ctx.body = buf + "<br/>" + JSON.stringify(jsonRes);
+    ctx.body = JSON.stringify(jsonRes);
 });
 
 router.post("/", async (ctx, next) => {
