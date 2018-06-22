@@ -91,10 +91,16 @@ router.post("/wx", async (ctx, next) => {
 	});
 
 	if(jsonRes.MsgType === "event" && jsonRes.Event === "subscribe") {
-		await redis.set("wechatEvent_params", JSON.stringify(jsonRes.xml), 7180);
+		if(jsonRes.EventKey) {
+			await redis.set("wechatEvent_params", JSON.stringify(Object.assign({}, jsonRes.xml, {
+				qrcode: true
+			})), 7180);
+		} else {
+			await redis.set("wechatEvent_params", JSON.stringify(jsonRes.xml), 7180);
+		}
 	}
 
-    await redis.set("wechatEvent_wx", JSON.stringify(ctx.request.body), 7180);
+    await redis.set("wechatEvent_wx", JSON.stringify(ctx), 7180);
     ctx.body = JSON.stringify(jsonRes);
 });
 
