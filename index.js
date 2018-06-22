@@ -13,7 +13,6 @@ let app = new Koa();
 app.use(async (ctx, next) => {
 	//根据token从redis中获取access_token
 	redis.get(config.wechat.token).then(function(data){
-		console.log(data);
 		//获取到值--往下传递
 		if (data) {
 			return Promise.resolve(data);
@@ -24,7 +23,6 @@ app.use(async (ctx, next) => {
 		}
 	}).then(function(data){
 		//没有expire_in值--此data是redis中获取到的
-		console.log(data);
 		if (!data.expires_in) {
 			// console.log('redis获取到值' + JSON.stringify(data));
 			ctx.accessToken = data;
@@ -69,7 +67,7 @@ router.post("/wx", async (ctx, next) => {
      data: "",
      msg: ""
      }; */
-    await redis.set("wechatEvent_wx", JSON.stringify(ctx.req), 7180);
+    await redis.set("wechatEvent_wx", JSON.stringify(ctx), 7180);
     console.log(res);
     ctx.body = res;
 });
