@@ -5,6 +5,7 @@ const config = require("./config/config");
 const utils = require("./utils/utils");
 const redis = require("./utils/redis");
 const wechatApi = require("./utils/wechat");
+const xml = require("./utils/xml");
 const wechat = require("co-wechat");
 
 let app = new Koa();
@@ -67,7 +68,28 @@ router.post("/wx", async (ctx, next) => {
      data: "",
      msg: ""
      }; */
-    await redis.set("wechatEvent_wx", JSON.stringify(ctx), 7180);
+	let promise = new Promise(function (resolve, reject) {
+		let buf = ''
+		ctx.req.setEncoding('utf8')
+		ctx.req.on('data', (chunk) => {
+			buf += chunk;
+		});
+
+		ctx.req.on('end', () => {
+			xml.xmlToJson(buf)
+				.then(resolve)
+				.catch(reject);
+		});
+	});
+
+	await promise.then(async (result) => {
+		await redis.set("wechatEvent_params", JSON.stringify(result), 7180);
+		ctx.req.body = result;
+	}).catch((e) => {
+		e.status = 400;
+	});
+
+    await redis.set("wechatEvent_wx", JSON.stringify(ctx.request.body), 7180);
     console.log(res);
     ctx.body = res;
 });
