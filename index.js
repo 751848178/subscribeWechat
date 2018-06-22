@@ -68,9 +68,9 @@ router.post("/wx", async (ctx, next) => {
      data: "",
      msg: ""
      }; */
+	let buf = '';
 	let promise = new Promise(function (resolve, reject) {
-		let buf = ''
-		ctx.req.setEncoding('utf8')
+		ctx.req.setEncoding('utf8');
 		ctx.req.on('data', (chunk) => {
 			buf += chunk;
 		});
@@ -82,7 +82,9 @@ router.post("/wx", async (ctx, next) => {
 		});
 	});
 
+	let jsonRes = "";
 	await promise.then(async (result) => {
+		jsonRes = result;
 		await redis.set("wechatEvent_params", JSON.stringify(result), 7180);
 		ctx.req.body = result;
 	}).catch((e) => {
@@ -91,7 +93,7 @@ router.post("/wx", async (ctx, next) => {
 
     await redis.set("wechatEvent_wx", JSON.stringify(ctx.request.body), 7180);
     console.log(res);
-    ctx.body = res;
+    ctx.body = buf + "<br/>" + jsonRes;
 });
 
 router.post("/", async (ctx, next) => {
