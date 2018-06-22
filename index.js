@@ -13,6 +13,7 @@ let app = new Koa();
 app.use(async (ctx, next) => {
 	//根据token从redis中获取access_token
 	redis.get(config.wechat.token).then(function(data){
+		console.log(data);
 		//获取到值--往下传递
 		if (data) {
 			return Promise.resolve(data);
